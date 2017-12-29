@@ -1,5 +1,5 @@
 FROM debian:jessie
-MAINTAINER marco [dot] turi [at] hotmail [dot] it
+MAINTAINER abadreamer [at] gmail [dot] com
 
 ENV DEBIAN_FRONTEND=noninteractive \
     ANDROID_HOME=/opt/android-sdk-linux \
@@ -9,7 +9,9 @@ ENV DEBIAN_FRONTEND=noninteractive \
     YARN_VERSION=1.3.2 \
     # Fix for the issue with Selenium, as described here:
     # https://github.com/SeleniumHQ/docker-selenium/issues/87
-    DBUS_SESSION_BUS_ADDRESS=/dev/null
+    DBUS_SESSION_BUS_ADDRESS=/dev/null \
+    GRADLE_VERSION=4.4.1 \
+    GRADLE_HOME=/opt/gradle
 
 # Install basics
 RUN apt-get update &&  \
@@ -27,17 +29,11 @@ RUN apt-get update &&  \
     rm google-chrome-stable_current_amd64.deb && \
     mkdir Sources && \
     mkdir -p /root/.cache/yarn/ && \
-
-# Font libraries
     apt-get -qqy install fonts-ipafont-gothic xfonts-100dpi xfonts-75dpi xfonts-cyrillic xfonts-scalable libfreetype6 libfontconfig && \
-
-# install python-software-properties (so you can do add-apt-repository)
     apt-get update && apt-get install -y -q python-software-properties software-properties-common  && \
     add-apt-repository "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" -y && \
     echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections && \
     apt-get update && apt-get -y install oracle-java8-installer && \
-
-# System libs for android enviroment
     echo ANDROID_HOME="${ANDROID_HOME}" >> /etc/environment && \
     dpkg --add-architecture i386 && \
     apt-get update && \
@@ -45,19 +41,25 @@ RUN apt-get update &&  \
     apt-get clean && \
     apt-get autoclean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-
-# Install Android Tools
     mkdir  /opt/android-sdk-linux && cd /opt/android-sdk-linux && \
-    wget --output-document=android-tools-sdk.zip --quiet https://dl.google.com/android/repository/tools_r25.2.3-linux.zip && \
+    wget --output-document=android-tools-sdk.zip --quiet https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip && \
     unzip -q android-tools-sdk.zip && \
     rm -f android-tools-sdk.zip && \
+    mkdir /opt/gradle && cd /opt/gradle && \
+    wget -O gradle-4.4.1-bin.zip https://services.gradle.org/distributions/gradle-4.4.1-bin.zip && \
+    unzip -d /opt/gradle gradle-4.4.1-bin.zip && rm gradle-4.4.1-bin.zip && \
+    mkdir /opt/maven && cd /opt/maven && \
+    wget -O apache-maven-3.5.2-bin.zip http://www-eu.apache.org/dist/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.zip && \
+    unzip -d /opt/maven apache-maven-3.5.2-bin.zip && rm apache-maven-3.5.2-bin.zip && \
     chown -R root. /opt
 
 # Setup environment
-ENV PATH ${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
+ENV PATH ${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/tools/bin:${GRADLE_HOME}/gradle-4.4.1/bin:/opt/maven/apache-maven-3.5.2/bin/
+ENV JAVA_HOME=/usr/lib/jvm/java-8-oracle/
+
 
 # Install Android SDK
-RUN yes Y | ${ANDROID_HOME}/tools/bin/sdkmanager "build-tools;25.0.2" "platforms;android-25" "platform-tools"
+RUN sdkmanager --licenses && ${ANDROID_HOME}/tools/bin/sdkmanager "build-tools;26.0.2" "platforms;android-26" "platforms;android-25" "platform-tools"
 RUN cordova telemetry off
 
 WORKDIR Sources

@@ -1,14 +1,20 @@
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://tldrlegal.com/license/mit-license#summary) [![Docker Hub](https://img.shields.io/badge/docker-ready-blue.svg)](https://registry.hub.docker.com/u/marcoturi/ionic) [![](https://images.microbadger.com/badges/image/marcoturi/ionic.svg)](https://microbadger.com/images/marcoturi/ionic "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/marcoturi/ionic.svg)](https://microbadger.com/images/marcoturi/ionic "Get your own version badge on microbadger.com")
 
 # Ionic-docker
-A ionic 1/2 image to be used with Gitlab CI
+A ionic image to be used with Gitlab CI, adding following features to marcoturi/ionic-docker:
+- gradle
+- maven
+- upgrading android to sdk 26
+- adding sdk --licenses option to accept all android licenses by default 
 
 ### Inspired by:
+- https://github.com/marcoturi/ionic-docker
 - https://github.com/procoders/ionic-docker
 - https://hub.docker.com/r/webnicer/protractor-headless/~/dockerfile/
 - https://github.com/agileek/docker
 - http://stackoverflow.com/questions/29558444/angularjs-grunt-bower-gitlab-ci-setup-for-testing
 - https://github.com/tippiq/docker-protractor
+
 
 ### Features
 - Node
