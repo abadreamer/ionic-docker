@@ -53,13 +53,14 @@ RUN apt-get update &&  \
     unzip -d /opt/maven apache-maven-3.5.2-bin.zip && rm apache-maven-3.5.2-bin.zip && \
     chown -R root. /opt
 
+# Install Android SDK
+RUN yes | ${ANDROID_HOME}/tools/bin/sdkmanager --licenses && ${ANDROID_HOME}/tools/bin/sdkmanager "build-tools;26.0.2" "platform-tools"
+
 # Setup environment
 ENV PATH ${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/tools/bin:${GRADLE_HOME}/gradle-4.4.1/bin:/opt/maven/apache-maven-3.5.2/bin/
 ENV JAVA_HOME=/usr/lib/jvm/java-8-oracle/
 
 
-# Install Android SDK
-RUN sdkmanager --licenses && ${ANDROID_HOME}/tools/bin/sdkmanager "build-tools;26.0.2" "platforms;android-26" "platforms;android-25" "platform-tools"
 RUN cordova telemetry off
 
 WORKDIR Sources
