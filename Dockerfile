@@ -1,5 +1,5 @@
 FROM debian:jessie
-MAINTAINER abadreamer [at] gmail [dot] com
+LABEL maintainer="abadreamer@gmail.com"
 
 ENV DEBIAN_FRONTEND=noninteractive \
     ANDROID_HOME=/opt/android-sdk-linux \
